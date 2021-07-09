@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ch01": "qunit -t src/ch01/tests.js -c src/ch01/tests.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/yoophi/fp-with-js-examples/issues"
   },
-  "homepage": "https://github.com/yoophi/fp-with-js-examples#readme"
+  "homepage": "https://github.com/yoophi/fp-with-js-examples#readme",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "jest": "^27.0.6",
+    "lodash": "^4.17.21",
+    "qunit": "^2.16.0",
+    "ramda": "^0.27.1"
+  }
 }
