@@ -91,3 +91,21 @@ QUnit.test("Listing 1.4 Decomposing the showStudent progran", function () {
 
   assert.equal(showStudent("444-44-4444"), "444-44-4444,Alonzo,Church");
 });
+
+QUnit.test("Listing 1.5 Programming with function chains", function () {
+  const enrollments = [
+    { enrolled: 3, grade: 90 },
+    { enrolled: 1, grade: 100 },
+    { enrolled: 1, grade: 87 },
+  ];
+
+  const result = _.chain(enrollments)
+    .filter((student) => student.enrolled > 1)
+    .map(_.property("grade"))
+    .mean()
+    .value();
+
+  console.log(result);
+
+  assert.equal(result, 90);
+});
