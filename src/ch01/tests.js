@@ -65,3 +65,29 @@ QUnit.test(
     );
   }
 );
+
+const curry = R.curry;
+
+QUnit.test("Listing 1.4 Decomposing the showStudent progran", function () {
+  const db = require("./helper").db;
+
+  const find = curry((db, id) => {
+    let obj = db.find(id);
+    if (obj === null) {
+      throw new Error("Object now found.");
+    }
+    return obj;
+  });
+
+  const csv = (student) =>
+    `${student.ssn},${student.firstname},${student.lastname}`;
+
+  const append = curry((source, info) => {
+    source(info);
+    return info;
+  });
+
+  const showStudent = run(append(console.log), csv, find(db));
+
+  assert.equal(showStudent("444-44-4444"), "444-44-4444,Alonzo,Church");
+});
