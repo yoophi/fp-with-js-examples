@@ -42,3 +42,26 @@ QUnit.test("Listing 1.2 Extending printMessage", function () {
     "HELLO WORLD HELLO WORLD HELLO WORLD"
   );
 });
+
+QUnit.test(
+  "List 1.3 Imperative showStudent function with side effects",
+  function () {
+    const db = require("./helper").db;
+
+    function showStudent(ssn) {
+      let student = db.find(ssn);
+      if (student !== null) {
+        let studentInfo = `<p>${student.ssn},${student.firstname},${student.lastname}</p>`;
+        console.log(studentInfo);
+        return studentInfo;
+      } else {
+        throw new Error("Student not found.");
+      }
+    }
+
+    assert.equal(
+      showStudent("444-44-4444"),
+      "<p>444-44-4444,Alonzo,Church</p>"
+    );
+  }
+);
