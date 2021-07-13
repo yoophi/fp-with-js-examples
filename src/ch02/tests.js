@@ -68,3 +68,19 @@ QUnit.test("Playing with Lenses", function () {
   assert.deepEqual(R.view(zipLens, student), z);
   assert.ok(newStudent !== student);
 });
+
+QUnit.test('Negation', function() {
+  function negate(func) {
+    return function() {
+      return !func.apply(null, arguments)
+    }
+  }
+
+  function isNull(val) {
+    return val === null
+  }
+
+  let isNotNull = negate(isNull)
+  assert.ok(!isNotNull(null))
+  assert.ok(isNotNull({}))
+})
