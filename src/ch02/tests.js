@@ -69,18 +69,45 @@ QUnit.test("Playing with Lenses", function () {
   assert.ok(newStudent !== student);
 });
 
-QUnit.test('Negation', function() {
+QUnit.test("Negation", function () {
   function negate(func) {
-    return function() {
-      return !func.apply(null, arguments)
-    }
+    return function () {
+      return !func.apply(null, arguments);
+    };
   }
 
   function isNull(val) {
-    return val === null
+    return val === null;
   }
 
-  let isNotNull = negate(isNull)
-  assert.ok(!isNotNull(null))
-  assert.ok(isNotNull({}))
-})
+  let isNotNull = negate(isNull);
+  assert.ok(!isNotNull(null));
+  assert.ok(isNotNull({}));
+});
+
+QUnit.test("Immutable setters", function () {
+  class Address {
+    constructor(street) {
+      this.street = street;
+    }
+  }
+
+  class Person {
+    constructor(name, address) {
+      this.name = name;
+      this.address = address;
+    }
+  }
+
+  const person = new Person("John Doe", new Address("100 Main Street"));
+  const streetLens = R.lens(
+    R.path(["address", "street"]),
+    R.assocPath(["address", "street"])
+  );
+
+  const newPerson = R.set(streetLens, "200 Broadway Street", person);
+
+  assert.ok(person instanceof Person);
+  assert.ok(!(newPerson instanceof Person));
+  assert.ok(newPerson instanceof Object);
+});
