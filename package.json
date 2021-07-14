@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "ch01": "qunit src/ch01/tests.js",
-    "ch02": "qunit src/ch02/tests.js"
+    "ch02": "qunit src/ch02/tests.js",
+    "ch03": "qunit src/ch03/tests.js"
   },
   "repository": {
     "type": "git",

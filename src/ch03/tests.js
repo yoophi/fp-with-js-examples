@@ -1,0 +1,56 @@
+"use strict";
+
+QUnit.module("Chapter 3");
+
+const _ = require("lodash");
+const { assert } = require("qunit");
+const R = require("ramda");
+
+const { Person } = require("../model/Person");
+const { Address } = require("../model/Address");
+
+const p1 = new Person(
+  "111-11-1111",
+  "Haskell",
+  "Curry",
+  1900,
+  new Address("US")
+);
+const p2 = new Person(
+  "222-22-2222",
+  "Barkley",
+  "Rosser",
+  1907,
+  new Address("Greece")
+);
+const p3 = new Person(
+  "333-33-3333",
+  "John",
+  "von Neumann",
+  1903,
+  new Address("Hungary")
+);
+const p4 = new Person(
+  "444-44-4444",
+  "Alonzo",
+  "Church",
+  1903,
+  new Address("US")
+);
+
+const person = [p1, p2, p3, p4];
+
+QUnit.test("Understanding reduce", function () {
+  let result = _(person).reduce((stat, person) => {
+    const country = person.address.country;
+    stat[country] = _.isUndefined(stat[country]) ? 1 : stat[country] + 1;
+
+    return stat;
+  }, {});
+
+  assert.deepEqual(result, {
+    US: 2,
+    Greece: 1,
+    Hungary: 1,
+  });
+});
