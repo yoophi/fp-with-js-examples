@@ -38,15 +38,31 @@ const p4 = new Person(
   new Address("US")
 );
 
-const person = [p1, p2, p3, p4];
+const persons = [p1, p2, p3, p4];
 
 QUnit.test("Understanding reduce", function () {
-  let result = _(person).reduce((stat, person) => {
+  let result = _(persons).reduce((stat, person) => {
     const country = person.address.country;
     stat[country] = _.isUndefined(stat[country]) ? 1 : stat[country] + 1;
 
     return stat;
   }, {});
+
+  assert.deepEqual(result, {
+    US: 2,
+    Greece: 1,
+    Hungary: 1,
+  });
+});
+
+QUnit.test("Combining map and reduce", function () {
+  const getCountry = (person) => person.address.country;
+  const gatherStats = (stat, criteria) => {
+    stat[criteria] = _.isUndefined(stat[criteria]) ? 1 : stat[criteria] + 1;
+
+    return stat;
+  };
+  let result = _(persons).map(getCountry).reduce(gatherStats, {});
 
   assert.deepEqual(result, {
     US: 2,
