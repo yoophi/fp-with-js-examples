@@ -70,3 +70,19 @@ QUnit.test("Combining map and reduce", function () {
     Hungary: 1,
   });
 });
+
+QUnit.test("Combining map and reduce with lenses", function () {
+  const cityPath = ["address", "country"];
+  const cityLens = R.lens(R.path(cityPath), R.assocPath(cityPath));
+  const gatherStats = (stat, criteria) => {
+    stat[criteria] = _.isUndefined(stat[criteria]) ? 1 : stat[criteria] + 1;
+    return stat;
+  };
+
+  let result = _(persons).map(R.view(cityLens)).reduce(gatherStats, {});
+  assert.deepEqual(result, {
+    US: 2,
+    Greece: 1,
+    Hungary: 1,
+  });
+});
