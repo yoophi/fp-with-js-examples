@@ -86,3 +86,15 @@ QUnit.test("Combining map and reduce with lenses", function () {
     Hungary: 1,
   });
 });
+
+QUnit.test("Valid or not valid", function () {
+  const isNotValid = (val) => _.isUndefined(val) || _.isNull(val);
+  const notAllValid = (args) => _(args).some(isNotValid);
+  assert.ok(notAllValid(["string", 0, null, undefined]));
+  assert.ok(!notAllValid(["string", 0, {}]));
+
+  const isValid = (val) => !_.isUndefined(val) && !_.isNull(val);
+  const allValid = (args) => _(args).every(isValid);
+  assert.ok(!allValid(["string", 0, null]));
+  assert.ok(allValid(["string", 0, {}]));
+});
