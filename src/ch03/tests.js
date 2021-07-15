@@ -214,3 +214,15 @@ QUnit.test("SQL-like JavaScript", function () {
     .value();
   assert.deepEqual(result, ["Barkley", "John"]);
 });
+
+QUnit.test("Recursive addition", function () {
+  function sum(arr) {
+    if (_.isEmpty(arr)) {
+      return 0;
+    }
+
+    return _.first(arr) + sum(_.tail(arr));
+  }
+  assert.equal(sum([]), 0);
+  assert.equal(sum([1, 2, 3, 4, 5, 6, 7, 8, 9]), 45);
+});
