@@ -226,3 +226,16 @@ QUnit.test("Recursive addition", function () {
   assert.equal(sum([]), 0);
   assert.equal(sum([1, 2, 3, 4, 5, 6, 7, 8, 9]), 45);
 });
+
+QUnit.test("Recursive addition 2", function () {
+  function sum(arr, acc = 0) {
+    if (_.isEmpty(arr)) {
+      return acc;
+    }
+
+    return sum(_.tail(arr), acc + _.first(arr));
+  }
+
+  assert.equal(sum([]), 0);
+  assert.equal(sum([1, 2, 3, 4, 5, 6, 7, 8, 9]), 45);
+});
