@@ -157,3 +157,50 @@ QUnit.test("Gather stats", function () {
     Hungary: { name: "Hungary", count: 1 },
   });
 });
+
+const persons2 = _(persons).map(R.identity);
+const p5 = new Person(
+  "555-55-5555",
+  "David",
+  "Hilbert",
+  1903,
+  new Address("Germany")
+);
+persons2.push(p5);
+const p6 = new Person(
+  "666-66-6666",
+  "Alan",
+  "Turing",
+  1912,
+  new Address("England")
+);
+persons2.push(p6);
+const p7 = new Person(
+  "777-77-7777",
+  "Stephen",
+  "Kleene",
+  1909,
+  new Address("US")
+);
+persons2.push(p7);
+
+QUnit.test("Lazy function chains", function () {
+  const gatherStats = function (stat, country) {
+    if (!isValid(stat[country])) {
+      stat[country] = { name: country, count: 0 };
+    }
+    stat[country].count++;
+    return stat;
+  };
+  const isValid = (val) => !_.isUndefined(val) && !_.isNull(val);
+  const result = _.chain(persons2)
+    .filter(isValid)
+    .map(_.property("address.country"))
+    .reduce(gatherStats, {})
+    .values()
+    .sortBy("count")
+    .reverse()
+    .first()
+    .value().name;
+  assert.equal(result, "US");
+});
