@@ -136,3 +136,24 @@ QUnit.test("Array processing with Lodash", function () {
     "Stephen Kleene",
   ]);
 });
+
+QUnit.test("Gather stats", function () {
+  const gatherStats = function (stat, country) {
+    if (!isValid(stat[country])) {
+      stat[country] = {
+        name: country,
+        count: 0,
+      };
+    }
+    stat[country].count++;
+    return stat;
+  };
+  const isValid = (value) => !_.isUndefined(value) && !_.isNull(value);
+  const getCountry = (person) => person.address.country;
+  const result = _(persons).map(getCountry).reduce(gatherStats, {});
+  assert.deepEqual(result, {
+    US: { name: "US", count: 2 },
+    Greece: { name: "Greece", count: 1 },
+    Hungary: { name: "Hungary", count: 1 },
+  });
+});
