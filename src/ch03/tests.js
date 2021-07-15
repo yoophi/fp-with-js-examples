@@ -239,3 +239,36 @@ QUnit.test("Recursive addition 2", function () {
   assert.equal(sum([]), 0);
   assert.equal(sum([1, 2, 3, 4, 5, 6, 7, 8, 9]), 45);
 });
+
+QUnit.test("Tree navigation", function () {
+  const { Node } = require("./model/Node");
+  const { Tree } = require("./model/Tree");
+
+  const church = new Node(p4);
+  const rosser = new Node(p2);
+  const turing = new Node(p6);
+  const kleene = new Node(p7);
+  const nelson = new Node(new Person("123-23-2345", "Nels", "Nelson"));
+  const constable = new Node(new Person("123-23-6778", "Robert", "Constable"));
+  const mendelson = new Node(new Person("123-23-3454", "Elliot", "Mendelson"));
+  const sacks = new Node(new Person("454-76-3434", "Gerald", "Sacks"));
+  const gandy = new Node(new Person("454-78-3432", "Robert", "Gandy"));
+
+  church.append(rosser).append(turing).append(kleene);
+  kleene.append(nelson).append(constable);
+  rosser.append(mendelson).append(sacks);
+  turing.append(gandy);
+
+  const newTree = Tree.map(church, (p) => p.fullname);
+  assert.deepEqual(newTree.toArray(), [
+    "Alonzo Church",
+    "Barkley Rosser",
+    "Elliot Mendelson",
+    "Gerald Sacks",
+    "Alan Turing",
+    "Robert Gandy",
+    "Stephen Kleene",
+    "Nels Nelson",
+    "Robert Constable",
+  ]);
+});
