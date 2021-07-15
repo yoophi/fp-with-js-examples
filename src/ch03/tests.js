@@ -105,3 +105,10 @@ QUnit.test("Introducing filter", function () {
   let result = _([p1, p2, p3, null]).filter(isValid).map(getFullname).value();
   assert.equal(result.length, 3);
 });
+
+QUnit.test("People born in 1903", function () {
+  const bornIn1903 = (person) => person.birthYear === 1903;
+  const getFullname = (person) => person.fullname;
+  let result = _(persons).filter(bornIn1903).map(getFullname).join(" and ");
+  assert.equal(result, "John von Neumann and Alonzo Church");
+});
