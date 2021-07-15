@@ -98,3 +98,10 @@ QUnit.test("Valid or not valid", function () {
   assert.ok(!allValid(["string", 0, null]));
   assert.ok(allValid(["string", 0, {}]));
 });
+
+QUnit.test("Introducing filter", function () {
+  const isValid = (val) => !_.isUndefined(val) && !_.isNull(val);
+  const getFullname = (person) => person.fullname;
+  let result = _([p1, p2, p3, null]).filter(isValid).map(getFullname).value();
+  assert.equal(result.length, 3);
+});
