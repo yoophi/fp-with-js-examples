@@ -112,3 +112,27 @@ QUnit.test("People born in 1903", function () {
   let result = _(persons).filter(bornIn1903).map(getFullname).join(" and ");
   assert.equal(result, "John von Neumann and Alonzo Church");
 });
+
+QUnit.test("Array processing with Lodash", function () {
+  let names = [
+    "alonzo church",
+    "Haskell curry",
+    "stephen_kleene",
+    "John Von Neumann",
+    "stephen_kleene",
+  ];
+  const isValid = (val) => !_.isUndefined(val) && !_.isNull(val);
+  const result = _.chain(names)
+    .filter(isValid)
+    .map((s) => s.replace(/_/, " "))
+    .uniq()
+    .map(_.startCase)
+    .sort()
+    .value();
+  assert.deepEqual(result, [
+    "Alonzo Church",
+    "Haskell Curry",
+    "John Von Neumann",
+    "Stephen Kleene",
+  ]);
+});
