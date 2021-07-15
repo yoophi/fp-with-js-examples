@@ -204,3 +204,13 @@ QUnit.test("Lazy function chains", function () {
     .value().name;
   assert.equal(result, "US");
 });
+
+QUnit.test("SQL-like JavaScript", function () {
+  _.mixin({ select: _.map, from: _.chain, where: _.filter });
+  const result = _.from(persons2)
+    .where((p) => p.birthYear > 1900 && p.address.country !== "US")
+    .sortBy(["_firstname"])
+    .select((rec) => rec.firstname)
+    .value();
+  assert.deepEqual(result, ["Barkley", "John"]);
+});
