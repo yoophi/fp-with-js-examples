@@ -101,3 +101,17 @@ QUnit.test("More composition", function () {
   result = isValidSsn(" 444-44-4444 ");
   assert.ok(result);
 });
+
+QUnit.test("Composition with functional libraries", function () {
+  const students = ["Rosser", "Turing", "Kleene", "Church"];
+  const grades = [80, 100, 90, 99];
+  const smartestStudent = R.compose(
+    R.head,
+    R.pluck(0),
+    R.reverse,
+    R.sortBy(R.prop(1)),
+    R.zip
+  );
+  const result = smartestStudent(students, grades);
+  assert.equal(result, "Turing");
+});
