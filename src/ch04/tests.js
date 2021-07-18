@@ -3,6 +3,7 @@
 const { assert } = require("qunit");
 
 const _ = require("lodash");
+const R = require("ramda");
 
 const isValid = (val) => !_.isUndefined(val) && !_.isNull(val);
 
@@ -76,4 +77,12 @@ QUnit.test("Extending the core language", function () {
   );
   result = "http://example.com".parseUrl();
   assert.deepEqual(result, ["http://example.com", "http", "example", "com"]);
+});
+
+QUnit.test("Composition", function () {
+  const str = `We can only see a short distance ahead but we can see plenty there that needs to be done`;
+  const explode = (str) => str.split(/\s+/);
+  const count = (arr) => arr.length;
+  const countWords = R.compose(count, explode);
+  assert.equal(countWords(str), 19);
 });
