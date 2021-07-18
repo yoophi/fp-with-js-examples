@@ -86,3 +86,18 @@ QUnit.test("Composition", function () {
   const countWords = R.compose(count, explode);
   assert.equal(countWords(str), 19);
 });
+
+QUnit.test("More composition", function () {
+  const trim = (str) => str.replace(/^\s*|\s*$/g, "");
+  const normalize = (str) => str.replace(/\-/g, "");
+  const validLength = (param, str) => str.length === param;
+  const checkLengthSsn = _.partial(validLength, 9);
+  const cleanInput = R.compose(normalize, trim);
+  const isValidSsn = R.compose(checkLengthSsn, cleanInput);
+
+  let result = cleanInput("444-44-4444");
+  assert.equal(result, "444444444");
+
+  result = isValidSsn(" 444-44-4444 ");
+  assert.ok(result);
+});
