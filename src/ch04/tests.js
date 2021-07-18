@@ -157,3 +157,23 @@ QUnit.test("Show student program with currying and composition", function () {
   const result = showStudent("44444-4444");
   assert.equal(result, "444-44-4444, Alonzo, Church");
 });
+
+QUnit.test("More point-free coding", function () {
+  const runProgram = R.pipe(R.map(R.toLower), R.uniq, R.sortBy(R.identity));
+  const result = runProgram([
+    "Functional",
+    "Programming",
+    "Curry",
+    "Memoization",
+    "Partial",
+    "Curry",
+    "Programming",
+  ]);
+  assert.deepEqual(result, [
+    "curry",
+    "functional",
+    "memoization",
+    "partial",
+    "programming",
+  ]);
+});
