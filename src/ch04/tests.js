@@ -115,3 +115,15 @@ QUnit.test("Composition with functional libraries", function () {
   const result = smartestStudent(students, grades);
   assert.equal(result, "Turing");
 });
+
+QUnit.test("Composition as point-free functions", function () {
+  const students = ["Rosser", "Turing", "Kleene", "Church"];
+  const grades = [80, 100, 90, 99];
+  const first = R.head;
+  const getName = R.pluck(0);
+  const reverse = R.reverse;
+  const sortByGrade = R.sortBy(R.prop(1));
+  const combine = R.zip;
+  const result = R.compose(first, getName, reverse, sortByGrade, combine);
+  assert.equal(result(students, grades), "Turing");
+});
