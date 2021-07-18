@@ -6,6 +6,8 @@ const _ = require("lodash");
 const R = require("ramda");
 
 const isValid = (val) => !_.isUndefined(val) && !_.isNull(val);
+const trim = (str) => str.replace(/^\s*|\s*$/g, "");
+const normalize = (str) => str.replace(/\-/g, "");
 
 QUnit.module("Chapter 4");
 
@@ -126,4 +128,32 @@ QUnit.test("Composition as point-free functions", function () {
   const combine = R.zip;
   const result = R.compose(first, getName, reverse, sortByGrade, combine);
   assert.equal(result(students, grades), "Turing");
+});
+
+QUnit.test("Show student program with currying and composition", function () {
+  const { db } = require("../ch01/helper");
+  const find = R.curry((db, id) => db.find(id));
+  const findObject = R.curry(function (db, id) {
+    const obj = find(db, id);
+    if (obj === null) {
+      throw new Error(`Object with ID [${id}] not found`);
+    }
+    return obj;
+  });
+  const findStudent = findObject(db);
+  const csv = ({ ssn, firstname, lastname }) =>
+    `${ssn}, ${firstname}, ${lastname}`;
+  const append = R.curry(function (elementId, info) {
+    console.log(info);
+    return info;
+  });
+  const showStudent = R.compose(
+    append("#student-info"),
+    csv,
+    findStudent,
+    normalize,
+    trim
+  );
+  const result = showStudent("44444-4444");
+  assert.equal(result, "444-44-4444, Alonzo, Church");
 });
