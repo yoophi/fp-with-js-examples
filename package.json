@@ -8,7 +8,8 @@
     "ch01": "qunit src/ch01/tests.js",
     "ch02": "qunit src/ch02/tests.js",
     "ch03": "qunit src/ch03/tests.js",
-    "ch04": "qunit src/ch04/tests.js"
+    "ch04": "qunit src/ch04/tests.js",
+    "ch05": "qunit src/ch05/tests.js"
   },
   "repository": {
     "type": "git",
