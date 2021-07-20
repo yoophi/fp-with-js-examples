@@ -4,6 +4,7 @@ const { assert } = require("qunit");
 const R = require("ramda");
 
 const { wrap } = require("../model/Wrapper");
+const { empty } = require("../model/Empty");
 
 QUnit.module("Chapter 5");
 
@@ -30,4 +31,11 @@ QUnit.test("Simple find with wrapper", function () {
   const studentAddress = R.compose(getAddress, findStudent(db));
 
   assert.deepEqual(studentAddress("444-44-4444"), wrap(wrap("Alonzo")));
+});
+
+QUnit.test("Simple empty container", function () {
+  const isEven = (n) => Number.isFinite(n) && n % 2 === 0;
+  const half = (val) => (isEven(val) ? wrap(val / 2) : empty());
+  assert.deepEqual(half(4), wrap(2));
+  assert.deepEqual(half(3), empty());
 });
