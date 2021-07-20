@@ -39,3 +39,13 @@ QUnit.test("Simple empty container", function () {
   assert.deepEqual(half(4), wrap(2));
   assert.deepEqual(half(3), empty());
 });
+
+QUnit.test("Simple empty container 2", function () {
+  const { Wrapper: WrapperMonad } = require("../model/monad/Wrapper");
+
+  const result = WrapperMonad.of("Hello Monads!")
+    .map(R.toUpper)
+    .map(R.identity);
+
+  assert.deepEqual(result, WrapperMonad.of("HELLO MONADS!"));
+});
