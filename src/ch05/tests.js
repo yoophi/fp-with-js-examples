@@ -6,6 +6,8 @@ const R = require("ramda");
 const { wrap } = require("../model/Wrapper");
 const { empty } = require("../model/Empty");
 const { Maybe, Nothing } = require("../model/monad/Maybe");
+const { Student } = require("../model/Student");
+const { Address } = require("../model/Address");
 
 QUnit.module("Chapter 5");
 
@@ -57,4 +59,24 @@ QUnit.test("Simple Maybe Test", function () {
 
   result = Maybe.fromNullable(null);
   assert.deepEqual(result, new Nothing(null));
+});
+
+QUnit.test("Maybe to extract a nested property in object graph", function () {
+  let address = new Address("US");
+  let student = new Student(
+    "444-44-4444",
+    "Joe",
+    "Smith",
+    "Harvard",
+    1960,
+    address
+  );
+
+  const getCountry = (student) =>
+    student
+      .map(R.prop("address"))
+      .map(R.prop("country"))
+      .getOrElse("Country does not exsist");
+
+  assert.equal(getCountry(Maybe.fromNullable(student)), address.country);
 });
