@@ -5,6 +5,7 @@ const R = require("ramda");
 
 const { wrap } = require("../model/Wrapper");
 const { empty } = require("../model/Empty");
+const { Maybe, Nothing } = require("../model/monad/Maybe");
 
 QUnit.module("Chapter 5");
 
@@ -48,4 +49,12 @@ QUnit.test("Simple empty container 2", function () {
     .map(R.identity);
 
   assert.deepEqual(result, WrapperMonad.of("HELLO MONADS!"));
+});
+
+QUnit.test("Simple Maybe Test", function () {
+  let result = Maybe.of("Hello Maybe!").map(R.toUpper);
+  assert.deepEqual(result, Maybe.of("HELLO MAYBE!"));
+
+  result = Maybe.fromNullable(null);
+  assert.deepEqual(result, new Nothing(null));
 });
