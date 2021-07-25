@@ -8,6 +8,7 @@ const { empty } = require("../model/Empty");
 const { Maybe, Nothing } = require("../model/monad/Maybe");
 const { Student } = require("../model/Student");
 const { Address } = require("../model/Address");
+const { Person } = require("../model/Person");
 
 QUnit.module("Chapter 5");
 
@@ -105,3 +106,29 @@ QUnit.test(
     );
   }
 );
+
+QUnit.test("Simple Either monad test", function () {
+  const { db } = require("../ch01/helper");
+  const find = R.curry((db, id) => db.find(id));
+  const { Left, Either } = require("../model/monad/Either");
+
+  const safeFindObject = R.curry(function (db, id) {
+    const obj = find(db, id);
+    return obj
+      ? Either.of(obj)
+      : Either.left(`Object not found with ID: ${id}`);
+  });
+  const findStudent = safeFindObject(db);
+
+  const result1 = findStudent("444-44-4444").getOrElse(new Student());
+  assert.deepEqual(result1, new Person("444-44-4444", "Alonzo", "Church"));
+
+  const result2 = findStudent("xxx-xx-xxxx");
+  assert.deepEqual(
+    result2,
+    Either.left(`Object not found with ID: xxx-xx-xxxx`)
+  );
+  assert.throws(() => {
+    console.log(result2.value);
+  }, TypeError);
+});
