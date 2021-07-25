@@ -80,3 +80,28 @@ QUnit.test("Maybe to extract a nested property in object graph", function () {
 
   assert.equal(getCountry(Maybe.fromNullable(student)), address.country);
 });
+
+QUnit.test(
+  "Maybe to extract a missing nested porperty in object graph",
+  function () {
+    let student = new Student(
+      "444-44-4444",
+      "Joe",
+      "Smith",
+      "Harvard",
+      1960,
+      null
+    );
+
+    const getCountry = (student) =>
+      student
+        .map(R.prop("address"))
+        .map(R.prop("country"))
+        .getOrElse("Country does not exist!");
+
+    assert.equal(
+      getCountry(Maybe.fromNullable(student)),
+      "Country does not exist!"
+    );
+  }
+);
