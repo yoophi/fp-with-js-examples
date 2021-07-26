@@ -9,6 +9,7 @@ const { Maybe, Nothing } = require("../model/monad/Maybe");
 const { Student } = require("../model/Student");
 const { Address } = require("../model/Address");
 const { Person } = require("../model/Person");
+const { Left, Either } = require("../model/monad/Either");
 
 QUnit.module("Chapter 5");
 
@@ -110,8 +111,6 @@ QUnit.test(
 QUnit.test("Simple Either monad test", function () {
   const { db } = require("../ch01/helper");
   const find = R.curry((db, id) => db.find(id));
-  const { Left, Either } = require("../model/monad/Either");
-
   const safeFindObject = R.curry(function (db, id) {
     const obj = find(db, id);
     return obj
@@ -131,4 +130,34 @@ QUnit.test("Simple Either monad test", function () {
   assert.throws(() => {
     console.log(result2.value);
   }, TypeError);
+});
+
+const { db } = require("../ch01/helper");
+const validLength = (len, str) => str.length === len;
+const find = R.curry((db, id) => db.find(id));
+const safeFindObject = R.curry((db, id) => {
+  const val = find(db, id);
+  return val
+    ? Either.right(val)
+    : Either.left(`Object not found with ID: ${id}`);
+});
+const checkLengthSsn = (ssn) =>
+  validLength(9, ssn) ? Either.right(ssn) : Either.left("invalid SSN");
+const findStudent = safeFindObject(db);
+const csv = (arr) => arr.join(",");
+const trim = (str) => str.replace(/^\s*|\s*$/g, "");
+const normalize = (str) => str.replace(/-/g, "");
+const cleanInput = R.compose(normalize, trim);
+
+QUnit.test("Using Either in show Student", function () {
+  const showStudent = (ssn) =>
+    Maybe.fromNullable(ssn)
+      .map(cleanInput)
+      .chain(checkLengthSsn)
+      .chain(findStudent)
+      .map(R.props(["ssn", "firstname", "lastname"]))
+      .map(csv)
+      .map(R.tap(console.log));
+  let result = showStudent("xxx-xx-xxxx").getOrElse("Student not found!");
+  assert.equal(result, "Student not found!");
 });
