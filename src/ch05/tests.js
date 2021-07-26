@@ -161,3 +161,24 @@ QUnit.test("Using Either in show Student", function () {
   let result = showStudent("xxx-xx-xxxx").getOrElse("Student not found!");
   assert.equal(result, "Student not found!");
 });
+
+QUnit.test("Monads as programmable commas", function () {
+  const map = R.curry((f, container) => container.map(f));
+  const chain = R.curry((f, container) => container.chain(f));
+  const lift = R.curry((f, obj) => Maybe.fromNullable(f(obj)));
+  const trace = R.curry((msg, obj) => console.log(msg));
+  const showStudent = R.compose(
+    R.tap(trace("student printed to the console")),
+    map(R.tap(console.log)),
+    R.tap(trace("Student info converted to CSV")),
+    map(csv),
+    map(R.props(["ssn", "firstname", "lastname"])),
+    R.tap(trace("Recored fetched successfully!")),
+    chain(findStudent),
+    R.tap(trace("Input was valid")),
+    chain(checkLengthSsn),
+    lift(cleanInput)
+  );
+  let result = showStudent("444-44-4444").getOrElse("Student not found!");
+  assert.equal(result, "444-44-4444,Alonzo,Church");
+});
