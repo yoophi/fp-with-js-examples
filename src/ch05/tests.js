@@ -10,6 +10,7 @@ const { Student } = require("../model/Student");
 const { Address } = require("../model/Address");
 const { Person } = require("../model/Person");
 const { Left, Either } = require("../model/monad/Either");
+const { IO } = require("../model/monad/IO");
 
 QUnit.module("Chapter 5");
 
@@ -133,6 +134,7 @@ QUnit.test("Simple Either monad test", function () {
 });
 
 const { db } = require("../ch01/helper");
+const { isObject } = require("lodash");
 const validLength = (len, str) => str.length === len;
 const find = R.curry((db, id) => db.find(id));
 const safeFindObject = R.curry((db, id) => {
@@ -181,4 +183,33 @@ QUnit.test("Monads as programmable commas", function () {
   );
   let result = showStudent("444-44-4444").getOrElse("Student not found!");
   assert.equal(result, "444-44-4444,Alonzo,Church");
+});
+
+QUnit.test("Complete showStudent program", function () {
+  const map = R.curry((f, container) => container.map(f));
+  const chain = R.curry((f, container) => container.chain(f));
+  const lift = R.curry((f, obj) => Maybe.fromNullable(f(obj)));
+  const liftIO = (val) => IO.of(val);
+  const append = R.curry(function (elementId, info) {
+    console.log(`Simulating effect. Appending ${info}`);
+    return info;
+  });
+  const getOrElse = R.curry((message, container) =>
+    container.getOrElse(message)
+  );
+
+  const showStudent = R.compose(
+    map(append("#student-info")),
+    liftIO,
+    getOrElse("unable to find student"),
+    map(csv),
+    map(R.props(["ssn", "firstname", "lastname"])),
+    chain(findStudent),
+    chain(checkLengthSsn),
+    lift(cleanInput)
+  );
+  let result = showStudent("444-44-4444").run();
+  assert.equal(result, "444-44-4444,Alonzo,Church");
+  let result2 = showStudent("xxx-xx-xxxx").run();
+  assert.equal(result2, "unable to find student");
 });
