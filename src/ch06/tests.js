@@ -19,3 +19,9 @@ QUnit.test("Compute Average Grade", function (assert) {
   );
   assert.equal(computedAverageGrade([80, 90, 100]), "A");
 });
+
+QUnit.test("Functional Combinator: fork", function (assert) {
+  const timesTwo = fork((x) => x + x, R.identity, R.identity);
+  assert.equal(timesTwo(1), 2);
+  assert.equal(timesTwo(2), 4);
+});
