@@ -3,6 +3,7 @@
 QUnit.module("Chapter 6");
 
 const R = require("ramda");
+const { Either } = require("../model/monad/Either");
 const fork = (join, func1, func2) => (val) => join(func1(val), func2(val));
 
 QUnit.test("Compute Average Grade", function (assert) {
@@ -37,4 +38,16 @@ QUnit.test("showStudent: cleanInput", function (assert) {
   input.forEach(function (val, key) {
     assert.equal(cleanInput(val), assertions[key]);
   });
+});
+
+QUnit.test("showStudent: checkLengthSsn", function (assert) {
+  const validLength = (len, str) => str.length === len;
+  const checkLengthSsn = (ssn) => {
+    return Either.of(ssn).filter(R.partial(validLength, [9]));
+  };
+
+  assert.ok(checkLengthSsn("444444444").isRight);
+  assert.ok(checkLengthSsn("").isLeft);
+  assert.ok(checkLengthSsn("44444444").isLeft);
+  assert.equal(checkLengthSsn("444444444").chain(R.length), 9);
 });
