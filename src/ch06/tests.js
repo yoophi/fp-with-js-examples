@@ -25,3 +25,16 @@ QUnit.test("Functional Combinator: fork", function (assert) {
   assert.equal(timesTwo(1), 2);
   assert.equal(timesTwo(2), 4);
 });
+
+QUnit.test("showStudent: cleanInput", function (assert) {
+  const trim = (str) => str.replace(/^\s*|\s*$/g, "");
+  const normalize = (str) => str.replace(/-/g, "");
+  const cleanInput = R.compose(normalize, trim);
+
+  const input = ["", "-44-44-", " 4 ", " 4-4 "];
+  const assertions = ["", "4444", "4", "44"];
+  assert.expect(input.length);
+  input.forEach(function (val, key) {
+    assert.equal(cleanInput(val), assertions[key]);
+  });
+});
