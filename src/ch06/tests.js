@@ -51,3 +51,12 @@ QUnit.test("showStudent: checkLengthSsn", function (assert) {
   assert.ok(checkLengthSsn("44444444").isLeft);
   assert.equal(checkLengthSsn("444444444").chain(R.length), 9);
 });
+
+QUnit.test("showStudent: csv", function (assert) {
+  const csv = (arr) => arr.join(",");
+
+  assert.equal(csv([""]), "");
+  assert.equal(csv(["Alonzo"]), "Alonzo");
+  assert.equal(csv(["Alonzo", "Church"]), "Alonzo,Church");
+  assert.equal(csv(["Alonzo", "", "Church"]), "Alonzo,,Church");
+});
