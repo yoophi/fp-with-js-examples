@@ -9,10 +9,14 @@ const { IO } = require("../model/monad/IO");
 
 let rot13 = ((s) =>
   s.replace(/[a-zA-Z]/g, (c) =>
-    String.fromCharCode(c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13)
-      ? c
-      : c - 26
+    String.fromCharCode(
+      (c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
+    )
   )).memoize();
+
+QUnit.test("Memoization test", function (assert) {
+  assert.equal(rot13("functional_js_50_off"), "shapgvbany_wf_50_bss");
+});
 
 QUnit.test("Performance", function (assert) {
   const start = () => now();

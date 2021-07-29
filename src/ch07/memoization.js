@@ -11,7 +11,7 @@ Function.prototype.memoize = function () {
     return fn;
   }
   return function () {
-    fn.memoized.apply(fn, arguments);
+    return fn.memoized.apply(fn, arguments);
   };
 };
 
