@@ -23,8 +23,35 @@ QUnit.test("Generator 2", function (assert) {
   }
 
   let r = range(0, Number.POSITIVE_INFINITY);
-
   assert.equal(r.next().value, 0);
   assert.equal(r.next().value, 1);
   assert.equal(r.next().value, 2);
+});
+
+QUnit.test("Generator 3", function (assert) {
+  function range(start, end) {
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next() {
+        if (start < end) {
+          return {
+            value: start++,
+            done: false,
+          };
+        }
+        return {
+          done: true,
+          value: end,
+        };
+      },
+    };
+  }
+  let res = [];
+  for (let num of range(0, 5)) {
+    res.push(num);
+  }
+
+  assert.deepEqual(res, [0, 1, 2, 3, 4]);
 });
